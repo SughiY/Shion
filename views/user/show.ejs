@@ -1,0 +1,41 @@
+
+<!--SCRIPTS-->
+<script src="/client/user/getVideo.js"></script>
+<!--SCRIPTS END-->
+
+<div class='container'>
+	<h1><%=user.name%></h1>
+	<h3 id='userid'>Id:<%=user.UserId%></h3>
+	<hr>
+	<h3> contact: <%= user.email %> </h3>
+	<p id='attention'>Shion will work better if you choose a place with good light environment</p>
+    <div id="video-wrapper" class="calibration" style="display: block;">
+				<div class="box">
+					<video id="capture" autoplay loop="" width="320" height="240" ></video>
+					<canvas id="compare" width="128" height="96" style="display:none"></canvas>
+					<canvas id="overlay" width="128" height="96"></canvas>
+				</div>
+				<div id="calibration">	
+                    <div class="calibrate">
+                        <img src="/images/241x187xcalibration-silhouette.png" alt="" width="241" height="187">
+                    </div>
+					<div class="instructions">
+						<p>Move your webcam so your head fills the space within the outline.</p>
+					</div>
+                    <div>
+                        <button class="btn btn-lg btn-primary btn-block" type="button" id="captureHead">start capture</button>
+                    </div> 
+                    </br></br>
+			    </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
