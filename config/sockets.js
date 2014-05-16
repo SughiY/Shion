@@ -7,7 +7,8 @@
  * For more information on using Sails with Sockets, check out:
  * http://sailsjs.org/#documentation
  */
-var facecontroller = require('../api/controllers/FaceController');
+var faceController = require('../api/controllers/FaceController')
+var sessionController = require('../api/controllers/SessionController') 
 
 module.exports.sockets = {
 
@@ -21,8 +22,8 @@ module.exports.sockets = {
     // This is a good place to subscribe a new socket to a room, inform other users that
     // someone new has come online, or any other custom socket.io logic
       console.log('Connected!!!')
-      facecontroller.getImages(null, socket)
-   
+      faceController.getImages(null, socket)
+      sessionController.listen(session, socket) 
 
   },
 

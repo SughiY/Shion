@@ -64,9 +64,10 @@
     <script src="/linker/js/jquery.validate.min.js"></script>
     <script src="/linker/js/bootstrap.js"></script>
     <script src="/linker/js/customValidate.js"></script>
+    <script src="/linker/js/faceRecognition.js"></script>
     <!--SCRIPTS END-->
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div id="top" class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
       <div class="navbar-header">
         <a class="navbar-brand" href="/"> Shion</a>
@@ -79,22 +80,18 @@
       </div>
 
       <% if (!session.authenticated) { %>
-            <form class="navbar-form navbar-right" action="/session/create">
+            <form class="navbar-form navbar-right" >
             <div class="form-group">
               <input type="text" placeholder="Email" name="email" class="form-control">
             </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" name="password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-            <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+            <button type="button" class="btn btn-success" id="faceRecognition">Sign in</button>
           </form>
       <% } %>
       </div>
+      
     </div>
 
     <%- body %>
-
     <div class="container">
       <hr>
       <footer class="footer pull-right">
@@ -134,5 +131,9 @@
 
       </body>
 </html>
+
+
+
+
 
 

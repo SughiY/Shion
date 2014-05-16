@@ -57,7 +57,7 @@ function sendVideo(){
         $('#attention').text("Shion can't catch your face. Maybe you can try to change your position")
         face()
     }) 
-    socket.on('getface',function(){
+    socket.on('getface', function(){
         console.log(count) 
         if(count < 10){
             face()
@@ -72,12 +72,3 @@ function sendVideo(){
     })
 }
 
-function getVideo(){
-    io.connect().on('captureBack', function(data){
-        var canvas = document.getElementById('canvas') 
-        var ctx = canvas.getContext('2d')
-        var image = new Image()
-        image.src = data.url
-        ctx.drawImage(image,0,0)
-    })
-}

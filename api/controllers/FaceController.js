@@ -19,6 +19,7 @@ var cv = require('opencv'); //opencv bindings
 var gm = require('gm'); //graphicsmagick
 var fs = require('fs'); //File System
 var crypto = require('crypto'); //Used for hashing filename
+var ObjectID = require('mongodb').ObjectID
 
 module.exports = {
 
@@ -30,7 +31,7 @@ module.exports = {
                         fs.mkdir(userFacePath);
                     }
                     var pgmPath = userFacePath + '/' + hashFilename() 
-                    cropFaceGray(data, pgmPath, function(err){
+                    cropFaceGray(data.image, pgmPath, function(err){
                         if(err){
                             console.log('server log:face is not detected, need one more face')
                             socket.emit('noface')
@@ -64,17 +65,81 @@ module.exports = {
         })
     },
 
-        /**
-         * Overrides for the settings in `config/controllers.js`
-         * (specific to FaceController)
-         */
-        _config: {}
+    compare: function(userId, image, socket, callback){
+
+        console.log('server log: Enter compare function')
+        var userFacePath = './serverFiles/image/' + userId                      
+            if(!fs.existsSync(userFacePath))
+            {
+                fs.mkdir(userFacePath)
+            }
+        var pgmPath = userFacePath + '/compare'   
+            cropFaceGray(image, pgmPath, function(err){
+                if(err){
+                    console.log('server log: RecognitionError!! face is not detected, need one more face')
+                    return callback("Shion can't catch your face", null)
+                } else {
+                    console.log('server log: success capture face for Recognition') 
+                    return predict(userId, pgmPath + '.pgm', function(err, distance){
+                        if(err){
+                            console.log('server log: error in predict')
+                            return callback(err, null)
+                        } else {
+                            console.log('server log: success for perdict face, analysing the distance')
+                            return callback(null, distance)
+                        }
+                    }) 
+                }
+            }) 
+    },
+
+    /**
+     * Overrides for the settings in `config/controllers.js`
+     * (specific to FaceController)
+     */
+    _config: {}
 
 
 };
 
 //Initialize FaceRecognizer variables
 lbphFaceRecognizer = cv.FaceRecognizer.createLBPHFaceRecognizer(1,8,8,8,75);
+
+//Predict
+function predict(userId, pgm_image, callback)
+{
+	//Find the most recent one
+	TrainingData.find({UserId:userId})
+	.done(function(err, datum){
+		if(err) { return callback(err, null); }
+		else
+		{
+			if(datum.length > 0){
+				trainingData = datum[datum.length - 1];
+
+				lbphFaceRecognizer.loadSync(trainingData.LBPHFace_path);
+				
+				cv.readImage(pgm_image, function(err, im){
+					if(err) { return callback(err, null); }
+					var label = lbphFaceRecognizer.predictSync(im).id,
+                    distance  = lbphFaceRecognizer.predictSync(im).confidence
+
+                    if(label != 1){
+                        console.log("server log: label isn't 1")
+                        return callback("You are not the same person with the account's owner", distance)
+                    } else {
+                        console.log('server log: got distance')
+                        callback(null, distance)
+                    }
+				});
+			}
+			else{
+				return callback(err, null);
+			}
+		}
+	});
+		
+}
 
 function train(faces, user, callback){
     console.log("server log: enter the train function")
@@ -84,13 +149,12 @@ function train(faces, user, callback){
         if(!fs.existsSync(faces[i].pgm_path)){
             console.log("There isn't the path:" + faces[i].pgm_path)
         } else {
-            trainingData.push([faces[i].pgm_path, faces[i].UserId])
+            trainingData.push([1, faces[i].pgm_path])
         }
     }
 
-    console.log(trainingData)
     console.log('server log: creating path if not exist')
-    trainingDataPath = './serverFiles/trainingdata/' + user + '/'
+    var trainingDataPath = './serverFiles/trainingdata/' + user + '/'
     if(!fs.existsSync(trainingDataPath)){
         fs.mkdir(trainingDataPath)
     }
@@ -101,7 +165,7 @@ function train(faces, user, callback){
     lbphFaceRecognizer.saveSync(trainingDataPath + hashNameLpbh)
 
     TrainingData.create({
-        LBPHFace_path : trainDataPath + hashNameLpbh,
+        LBPHFace_path : trainingDataPath + hashNameLpbh,
         UserId        : user
     })
     .done(function(err, trainingdata){
@@ -129,7 +193,7 @@ function findFaceAndTrain(user, callback){
             return callback(err)
         } else {
             console.log("server log: found faces")
-            if(faces.length > 1){
+            if(faces.length > 1 && faces[0].UserId === faces[faces.length - 1].UserId){
                 train(faces, user, function(err){
                     if(err){
                         console.log("server log: error in train")
@@ -140,8 +204,8 @@ function findFaceAndTrain(user, callback){
                     }
                 }) 
             } else {
-                console.log("server log: error in train - the faces are not enough")
-                var err = "faces aren't enough"
+                console.log("server log: error in train - the faces are not the same")
+                var err = "faces aren't not the same"
                 return callback(err)
             }
         }
@@ -149,9 +213,9 @@ function findFaceAndTrain(user, callback){
 
 }
 
-function cropFaceGray(data, pgmPath, callback){
+function cropFaceGray(image, pgmPath, callback){
         
-        var base64noHead = data.image.replace(/^data:image\/\w+;base64,/,"")
+        var base64noHead = image.replace(/^data:image\/\w+;base64,/,"")
         var bitmap = new Buffer(base64noHead, 'base64') 
         
         cv.readImage(bitmap, function(err, im){
@@ -194,7 +258,6 @@ function convertBufferToPGM(databuffer, imagepath, callback)
 {
     console.log("SERVER LOG: Inside convertBufferToPGM");
     err = null;
-    console.log(imagepath);
     gm(databuffer)
         .setFormat('pgm')
         .resize(92, 112, "!")
@@ -207,11 +270,11 @@ function setBaseData(){
     for(i=1; i<=40; i++){
         var baseFacesPath = './serverFiles/image/baseImageDatas/s'
             var userPath = baseFacesPath + i +'/'
-            var fakeUserId = hashFilename()
+            var fakeUserId = new ObjectID()
             for(j=1; j<=10; j++){
                 var facePath = userPath + j + '.pgm'
                     Face.create({
-                        UserId  : fakeUserId,
+                        UserId  : fakeUserId.toString(),
                         pgm_path: facePath,
                         isBase  : true
                     }).done(function(err, faces){

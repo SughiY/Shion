@@ -14,7 +14,8 @@
  *
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt')
+var compare = require('./FaceController').compare
 
 module.exports = {
     
@@ -25,10 +26,59 @@ module.exports = {
    * Overrides for the settings in `config/controllers.js`
    * (specific to SessionController)
    */
-  'new': function(req, res) {
-		res.view('session/new');
+    'new': function(req, res) {
+		res.view('session/new')
 	},
 
+    listen: function(session, socket){
+        
+        socket.on('faceForRec', function(data){
+            User.findOneByEmail(data.email, function(err, user){
+
+                if(!user){
+                    socket.emit('RecError', {'text':'Sorry, There is no User who use this email'})
+                    return
+                }
+
+                compare(user.id, data.face, socket, function(err, distance){
+                    if(err){
+                        console.log('server log: Error !! Someone want to log in ' + user.name + "'s account" ) 
+                        socket.emit('faceError', {'text':err}) 
+                        //need a mechanism for deciding recognitione
+                        return
+                    } else if(distance < 60){
+                         console.log('server log: ' + user.username + ' log in')
+                         session.authenticated = true
+                         session.User = user
+                         user.save(function(err, user) {
+					        if (err) return next(err)
+
+                            // Inform other sockets (e.g. connected sockets that are subscribed) that this user is now logged in
+                            User.publishUpdate(user.id, {
+                                loggedIn: true,
+                                id: user.id,
+                                name: user.name,
+                                action: ' has logged in.'
+                            })
+
+                            session.save(function(err){
+                                if(err){console.log('server log: authenticated set is getting wrong')}
+                                else{console.log('server log: authenticated is true Now !')} 
+                                socket.emit('Login', 
+                                    {'addr':'/user/show/' + user.id,
+                                     'text':'Welcome! ' + user.name
+                                })
+                            })
+                         })
+                    } else {
+                        socket.emit('faceError', {'text':'Please adjust your position for rcognition'}) 
+                    }
+                
+                })
+            })
+        })
+    },
+        
 	create: function(req, res, next) {
 
 		// Check for email and password in params sent via the form, if none

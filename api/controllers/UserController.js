@@ -50,7 +50,8 @@ module.exports = {
 	      // After successfully creating the user
 	      // redirect to the show action
 	      // From ep1-6: //res.json(user); 
-
+          req.session.authenticated = true;
+		  req.session.User = user;
           
 	      res.redirect('/user/show/'+user.id);
 	  });
@@ -58,18 +59,19 @@ module.exports = {
    
    // show the image data of user
    show: function (req, res, next) {
-    User.findOne(req.param('id'), function foundUser (err, user) {
-      if (err) return next(err);
-      if (!user) return next();
-      // Log user in
-	  req.session.authenticated = true;
-	  req.session.User = user;
+    if(req.session.authenticated){
+        User.findOne(req.param('id'), function foundUser (err, user) {
+            if (err) return next(err);
+            if (!user) return next();
+            // Log user in
 
-      res.view({
-        user: user
-      });
-    });
-
+            res.view({
+                user: user
+            });
+        });
+    } else {
+        res.redirect('404')
+    }
    }
   
 };

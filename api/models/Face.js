@@ -21,10 +21,6 @@ module.exports = {
 		  required:true		  
 	  },
 
-      isBase:{
-		  type:'boolean'
-	  }
-    
   }
 
 };
