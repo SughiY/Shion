@@ -20,10 +20,7 @@ module.exports.adapters = {
 
   mongo:{
       module    :'sails-mongo',
-      host      :'localhost',
-      user      :'',
-      password  :'',
-      database  :''
+      url       :process.env.DB_URL
   }
 
 };
