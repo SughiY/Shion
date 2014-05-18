@@ -62,7 +62,6 @@ config/local.js
 # local files
 ########################
 *.pgm
-./serverFiles/*
 facerec-server-node-sails
 
 >>>>>>> The part of Getting Face
