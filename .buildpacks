@@ -1,0 +1,4 @@
+https://github.com/heroku/heroku-buildpack-nodejs.git#0198c71daa8
+https://bitbucket.org/labgoo/heroku-buildpack-nodejs-with-opencv
+https://github.com/rumblelabs/heroku-buildpack-cairo
+https://github.com/hdachev/heroku-buildpack-opencv.git
