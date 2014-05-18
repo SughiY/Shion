@@ -2,6 +2,10 @@
     "name": "shion",
     "private": true,
     "version": "0.0.1",
+    "engines": {
+        "node": "0.10.x",
+        "npm": "1.4.x"
+    },
     "description": "shion-a simple verification service by face recognition",
     "dependencies": {
         "sails": "0.9.16",
@@ -26,4 +30,5 @@
     },
     "author": "SughiY",
     "license": "MIT"
+    
 }
