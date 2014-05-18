@@ -28,7 +28,7 @@ module.exports = {
                     var userFacePath = './serverFiles/image/' + data.UserId                      
                     if(!fs.existsSync(userFacePath))
 	                {
-                        fs.mkdir(userFacePath);
+                        fs.mkSync(userFacePath);
                     }
                     var pgmPath = userFacePath + '/' + hashFilename() 
                     cropFaceGray(data.image, pgmPath, function(err){
@@ -71,7 +71,7 @@ module.exports = {
         var userFacePath = './serverFiles/image/' + userId                      
             if(!fs.existsSync(userFacePath))
             {
-                fs.mkdir(userFacePath)
+                fs.mkdirSync(userFacePath)
             }
         var pgmPath = userFacePath + '/compare'   
             cropFaceGray(image, pgmPath, function(err){
@@ -156,7 +156,7 @@ function train(faces, user, callback){
     console.log('server log: creating path if not exist')
     var trainingDataPath = './serverFiles/trainingdata/' + user + '/'
     if(!fs.existsSync(trainingDataPath)){
-        fs.mkdir(trainingDataPath)
+        fs.mkdirSync(trainingDataPath)
     }
 
     console.log("server log: creating lbphface training data")
