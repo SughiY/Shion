@@ -3,8 +3,8 @@
     "private": true,
     "version": "0.0.1",
     "engines": {
-        "node": "0.10.x",
-        "npm": "1.3.x"
+        "node": "0.8.x",
+        "npm": "1.3.1"
     },
     "description": "shion-a simple verification service by face recognition",
     "dependencies": {
