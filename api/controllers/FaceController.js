@@ -28,7 +28,7 @@ module.exports = {
                     var userFacePath = './serverFiles/image/' + data.UserId                      
                     if(!fs.existsSync(userFacePath))
 	                {
-                        fs.mkSync(userFacePath);
+                        fs.mkdirSync(userFacePath);
                     }
                     var pgmPath = userFacePath + '/' + hashFilename() 
                     cropFaceGray(data.image, pgmPath, function(err){
