@@ -1,4 +1,4 @@
 https://bitbucket.org/labgoo/heroku-buildpack-nodejs-with-opencv
-https://github.com/hdachev/heroku-buildpack-opencv.git
 https://github.com/heroku/heroku-buildpack-nodejs.git
+https://github.com/hdachev/heroku-buildpack-opencv.git
 EOF
