@@ -17,16 +17,22 @@
 
 var cv = require('opencv'); //opencv bindings
 var gm = require('gm'); //graphicsmagick
-var fs = require('fs'); //File System
 var crypto = require('crypto'); //Used for hashing filename
-var ObjectID = require('mongodb').ObjectID
+var knox = require('knox')
 
+var amazon_url + 'http://s3.amazonaws.com/' + process.env.AWS_S3_BUCKET
+//var amazon_url + 'http://s3.amazonaws.com/' + 'suighysanctuary'
+var knox_params = {
+    //key: process.env.AWS_ACCESS_KEY_ID.toString(),
+    //secret: process.env.AWS_SECRET_ACCESS_KEY.toString(),
+    bucket: process.env.AWS_S3_BUCKET.toString()
+}
 module.exports = {
 
     getImages: function(session, socket){ 
         socket.on('capture', function(data){
-                    var userFacePath = 'http://s3.amazonaws.com/suighysanctuaryimage/' + data.UserId                      
-                    if(!fs.existsSync('http://s3.amazonaws.com/suighysanctuaryimage/')) fs.mkdirSync('http://s3.amazonaws.com/suighysanctuaryimage/')
+                    var userFacePath = amazon_url+'image/' + data.UserId                      
+                    if(!fs.existsSync(amazon_url+'image/')) fs.mkdirSync(amazon_url+'image/')
                     if(!fs.existsSync(userFacePath))
 	                {
                         fs.mkdirSync(userFacePath);
@@ -69,8 +75,8 @@ module.exports = {
     compare: function(userId, image, socket, callback){
 
         console.log('server log: Enter compare function')
-        var userFacePath = 'http://s3.amazonaws.com/suighysanctuaryimage/' + userId                      
-            if(!fs.existsSync('http://s3.amazonaws.com/suighysanctuaryimage/')) fs.mkdirSync('http://s3.amazonaws.com/suighysanctuaryimage/')
+        var userFacePath = amazon_url+'image/' + userId                      
+            if(!fs.existsSync(amazon_url+'image/')) fs.mkdirSync(amazon_url+'image/')
             if(!fs.existsSync(userFacePath))
             {
                 fs.mkdirSync(userFacePath)
@@ -156,8 +162,8 @@ function train(faces, user, callback){
     }
 
     console.log('server log: creating path if not exist')
-    var trainingDataPath = 'http://s3.amazonaws.com/suighysanctuarytrainingdata/' + user + '/'
-    if(!fs.existsSync('http://s3.amazonaws.com/suighysanctuarytrainingdata/')) fs.mkdirSync('http://s3.amazonaws.com/suighysanctuarytrainingdata/')
+    var trainingDataPath = amazon_url+'trainingdata/' + user + '/'
+    if(!fs.existsSync(amazon_url+'trainingdata/')) fs.mkdirSync(amazon_url+'trainingdata/')
     if(!fs.existsSync(trainingDataPath)){
         fs.mkdirSync(trainingDataPath)
     }
@@ -269,24 +275,4 @@ function convertBufferToPGM(databuffer, imagepath, callback)
         });
 }
             
-function setBaseData(){ 
-    for(i=1; i<=40; i++){
-        var baseFacesPath = './serverFiles/image/baseImageDatas/s'
-            var userPath = baseFacesPath + i +'/'
-            var fakeUserId = new ObjectID()
-            for(j=1; j<=10; j++){
-                var facePath = userPath + j + '.pgm'
-                    Face.create({
-                        UserId  : fakeUserId.toString(),
-                        pgm_path: facePath,
-                        isBase  : true
-                    }).done(function(err, faces){
-                        if(err){
-                            console.log('error for getting base data')
-                        } else {
-                            console.log('success for getting base data')
-                        }
-                    })
-            }
-    }
-}
+
