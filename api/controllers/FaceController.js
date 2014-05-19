@@ -25,7 +25,8 @@ module.exports = {
 
     getImages: function(session, socket){ 
         socket.on('capture', function(data){
-                    var userFacePath = './serverFiles/image/' + data.UserId                      
+                    var userFacePath = 'http://s3.amazonaws.com/suighysanctuaryimage/' + data.UserId                      
+                    if(!fs.existsSync('http://s3.amazonaws.com/suighysanctuaryimage/')) fs.mkdirSync('http://s3.amazonaws.com/suighysanctuaryimage/')
                     if(!fs.existsSync(userFacePath))
 	                {
                         fs.mkdirSync(userFacePath);
@@ -68,7 +69,8 @@ module.exports = {
     compare: function(userId, image, socket, callback){
 
         console.log('server log: Enter compare function')
-        var userFacePath = './serverFiles/image/' + userId                      
+        var userFacePath = 'http://s3.amazonaws.com/suighysanctuaryimage/' + userId                      
+            if(!fs.existsSync('http://s3.amazonaws.com/suighysanctuaryimage/')) fs.mkdirSync('http://s3.amazonaws.com/suighysanctuaryimage/')
             if(!fs.existsSync(userFacePath))
             {
                 fs.mkdirSync(userFacePath)
@@ -154,7 +156,8 @@ function train(faces, user, callback){
     }
 
     console.log('server log: creating path if not exist')
-    var trainingDataPath = './serverFiles/trainingdata/' + user + '/'
+    var trainingDataPath = 'http://s3.amazonaws.com/suighysanctuarytrainingdata/' + user + '/'
+    if(!fs.existsSync('http://s3.amazonaws.com/suighysanctuarytrainingdata/')) fs.mkdirSync('http://s3.amazonaws.com/suighysanctuarytrainingdata/')
     if(!fs.existsSync(trainingDataPath)){
         fs.mkdirSync(trainingDataPath)
     }
