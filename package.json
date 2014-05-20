@@ -1,31 +1,42 @@
 {
-    "name": "shion",
-    "private": true,
-    "version": "0.0.1",
-    "engines": {
-        "node": "0.10.x",
-        "npm": "1.3.x"
-    },
-    "description": "shion-a simple verification service by face recognition",
-    "dependencies": {
-        "sails": "0.9.16",
-        "grunt": "0.4.1",
-        "sails-mongo": "~0.9.8",
-        "ejs": "0.8.4",
-        "optimist": "0.3.4",
-        "mongodb" :"1.4.4",
-        "opencv" : "0.5.0",
-        "gm": "1.16.0",
-        "bcrypt": "0.7.8",
-        "crypto": "0.0.3"
-    },
-    "scripts": {
-        "start": "node app.js",
-        "debug": "node debug app.js"
-    },
-    "main": "app.js",
-    "repository": "",
-    "author": "SughiY",
-    "license": "MIT"
-    
+  "name": "shion",
+  "private": true,
+  "version": "0.0.1",
+  "engines": {
+    "node": "0.9.x",
+    "npm": "1.3.x"
+  },
+  "description": "shion-a simple verification service by face recognition",
+  "dependencies": {
+    "sails": "0.9.16",
+    "grunt": "0.4.1",
+    "sails-mongo": "~0.9.8",
+    "ejs": "0.8.4",
+    "optimist": "0.3.4",
+    "mongodb": "1.4.4",
+    "opencv": "0.5.0",
+    "gm": "1.16.0",
+    "bcrypt": "0.7.8",
+    "crypto": "0.0.3"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "debug": "node debug app.js"
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SughiY/Shion.git"
+  },
+  "author": "SughiY",
+  "license": "BSD-2-Clause",
+  "devDependencies": {},
+  "keywords": [
+    "face-recognition",
+    "node",
+    "sails.js"
+  ],
+  "bugs": {
+    "url": "https://github.com/SughiY/Shion/issues"
+  }
 }

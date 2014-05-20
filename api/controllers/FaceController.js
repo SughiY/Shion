@@ -19,7 +19,6 @@ var cv = require('opencv'); //opencv bindings
 var gm = require('gm'); //graphicsmagick
 var fs = require('fs'); //File System
 var crypto = require('crypto'); //Used for hashing filename
-var ObjectID = require('mongodb').ObjectID
 
 module.exports = {
 

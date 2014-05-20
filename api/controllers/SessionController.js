@@ -186,7 +186,7 @@ module.exports = {
 					req.session.destroy();
 
 					// Redirect the browser to the sign-in screen
-					res.redirect('/session/new');
+					res.redirect('/');
 				});
 			} else {
 
@@ -194,7 +194,7 @@ module.exports = {
 				req.session.destroy();
 
 				// Redirect the browser to the sign-in screen
-				res.redirect('/session/new');
+				res.redirect('/');
 			}
 		});
 	}  
